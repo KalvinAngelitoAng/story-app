@@ -1,0 +1,359 @@
+/* --- Reset & Font Dasar --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f9;
+  color: #333;
+}
+
+/* --- Aksesibilitas: Skip Link --- */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background-color: #007bff;
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* --- Header & Navigasi --- */
+header {
+  background-color: #fff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+nav a {
+  margin-right: 1rem;
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* --- Konten Utama & Transisi Halaman --- */
+main {
+  padding: 2rem;
+  min-height: 80vh;
+}
+
+/* Definisikan animasi fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Ganti selector dari ID menjadi CLASS */
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* --- Footer --- */
+footer {
+  text-align: center;
+  padding: 1.5rem;
+  background-color: #333;
+  color: #fff;
+}
+
+/* --- Styling untuk Form --- */
+.form-container {
+  max-width: 500px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.form-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.form-button:hover {
+  background-color: #0056b3;
+}
+
+.error-message {
+  margin-top: 1rem;
+  color: #dc3545;
+  font-weight: bold;
+}
+
+/* --- Styling untuk Daftar Cerita --- */
+.stories-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.story-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.story-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.story-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.story-card-body {
+  padding: 1rem;
+}
+
+.story-card-body h3 {
+  margin-bottom: 0.5rem;
+}
+
+/* Styling untuk tombol di kartu cerita */
+.story-card__button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.story-card__button:hover {
+  background-color: #0056b3;
+}
+
+/* Styling untuk tanggal di kartu cerita */
+.story-date {
+  display: block;
+  color: #6c757d;
+  font-size: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Styling untuk pesan 'Anda Belum Login' */
+.auth-prompt {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 600px;
+  margin: 2rem auto;
+}
+.auth-prompt h2 {
+  margin-bottom: 1rem;
+}
+.auth-prompt p {
+  margin-bottom: 2rem;
+  color: #6c757d;
+}
+.auth-prompt__actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.auth-prompt__actions a {
+  display: inline-block;
+  text-decoration: none;
+  width: 150px;
+}
+.form-button--secondary {
+  background-color: #6c757d;
+}
+.form-button--secondary:hover {
+  background-color: #5a6268;
+}
+
+/* Styling untuk peta pemilih lokasi */
+#map-picker {
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+#coords-display {
+  padding: 0.5rem;
+  background-color: #e9ecef;
+  border-radius: 4px;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+/* Styling untuk Fitur Kamera */
+.camera-button, .capture-button {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.camera-button:hover, .capture-button:hover {
+  background-color: #e9ecef;
+}
+
+.camera-container {
+  margin-bottom: 1.5rem;
+}
+
+#camera-feed {
+  width: 100%;
+  border-radius: 8px;
+  background-color: #000;
+}
+
+/* --- Styling untuk Halaman Detail Cerita --- */
+.story-detail {
+  max-width: 800px;
+  margin: 2rem auto;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.story-detail__image {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+}
+
+.story-detail__content {
+  padding: 2rem;
+}
+
+.story-detail__name {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.story-detail__date {
+  display: block;
+  color: #6c757d;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.story-detail__description {
+  line-height: 1.7;
+  font-size: 1.1rem;
+}
+
+/* Styling untuk pesan 'Cerita Tidak Ditemukan' */
+.story-not-found {
+  text-align: center;
+  padding: 3rem 1.5rem;
+}
+.story-not-found h2 {
+  margin-bottom: 1rem;
+}
+.story-not-found p {
+  margin-bottom: 2rem;
+  color: #6c757d;
+}
+.story-not-found a {
+  display: inline-block;
+  text-decoration: none;
+  max-width: 200px;
+}
+
+/* Tablet (lebar 768px ke bawah) */
+@media (max-width: 768px) {
+  header {
+    padding: 1rem;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  .form-container {
+    margin: 1rem auto;
+    padding: 1.5rem;
+  }
+
+  .stories-list {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+}
+
+/* Mobile (lebar 480px ke bawah) */
+@media (max-width: 480px) {
+  nav a {
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+  }
+
+  .stories-list {
+    /* Menjadi satu kolom di layar sangat kecil */
+    grid-template-columns: 1fr;
+  }
+
+  footer {
+    padding: 1rem;
+  }
+}

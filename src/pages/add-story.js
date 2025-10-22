@@ -1,0 +1,144 @@
+import StoryApi from '../api/story-api.js';
+import L from 'leaflet';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+const AddStory = {
+    async render() {
+        return `
+      <div class="form-container">
+        <h2>Buat Cerita Baru</h2>
+        <form id="add-story-form">
+          <div class="form-group">
+            <label for="description">Deskripsi</label>
+            <textarea id="description" name="description" class="form-input" rows="4" required></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="photo">Unggah Foto</label>
+            <input type="file" id="photo" name="photo" class="form-input" accept="image/*" required>
+            <button type="button" id="camera-button" class="camera-button">Gunakan Kamera</button>
+          </div>
+          
+          <div id="camera-container" class="camera-container" style="display: none;">
+            <video id="camera-feed" autoplay></video>
+            <button type="button" id="capture-button" class="capture-button">Ambil Gambar</button>
+            <canvas id="photo-canvas" style="display: none;"></canvas>
+          </div>
+
+          <div class="form-group">
+            <label>Pilih Lokasi</label>
+            <div id="map-picker" style="height: 300px; width: 100%;"></div>
+            <input type="hidden" id="lat" name="lat">
+            <input type="hidden" id="lon" name="lon">
+            <div id="coords-display">Koordinat belum dipilih</div>
+          </div>
+
+          <button type="submit" class="form-button">Publikasikan Cerita</button>
+        </form>
+        <div id="error-message" class="error-message"></div>
+      </div>
+    `;
+    },
+
+    async afterRender() {
+        // Perbaiki path ikon default Leaflet
+        delete L.Icon.Default.prototype._getIconUrl;
+        L.Icon.Default.mergeOptions({
+            iconUrl: markerIcon,
+            iconRetinaUrl: markerIcon2x,
+            shadowUrl: markerShadow,
+        });
+
+        const map = L.map('map-picker').setView([-2.548926, 118.0148634], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+        const latInput = document.querySelector('#lat');
+        const lonInput = document.querySelector('#lon');
+        const coordsDisplay = document.querySelector('#coords-display');
+        let marker = null;
+
+        map.on('click', (e) => {
+            const { lat, lng } = e.latlng;
+
+            // Simpan koordinat ke input tersembunyi
+            latInput.value = lat;
+            lonInput.value = lng;
+
+            // Tampilkan koordinat ke pengguna
+            coordsDisplay.innerText = `Lat: ${lat.toFixed(4)}, Lon: ${lng.toFixed(4)}`;
+
+            // Pindahkan marker ke lokasi baru (atau buat jika belum ada)
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
+        });
+
+        // --- Logika Kamera ---
+        const cameraButton = document.querySelector('#camera-button');
+        const cameraContainer = document.querySelector('#camera-container');
+        const video = document.querySelector('#camera-feed');
+        const captureButton = document.querySelector('#capture-button');
+        const canvas = document.querySelector('#photo-canvas');
+        const photoInput = document.querySelector('#photo');
+        let stream = null;
+
+        cameraButton.addEventListener('click', async () => {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+                cameraContainer.style.display = 'block';
+            } catch (error) {
+                console.error('Error accessing camera:', error);
+                alert('Tidak bisa mengakses kamera. Pastikan Anda memberikan izin.');
+            }
+        });
+
+        captureButton.addEventListener('click', () => {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob((blob) => {
+                const file = new File([blob], 'camera-photo.jpg', { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                photoInput.files = dataTransfer.files;
+            }, 'image/jpeg');
+
+            // Matikan kamera setelah mengambil gambar
+            stream.getTracks().forEach(track => track.stop());
+            cameraContainer.style.display = 'none';
+        });
+
+        const addStoryForm = document.querySelector('#add-story-form');
+        addStoryForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const errorMessageContainer = document.querySelector('#error-message');
+            const description = document.querySelector('#description').value;
+            const photo = document.querySelector('#photo').files[0];
+            const lat = document.querySelector('#lat').value;
+            const lon = document.querySelector('#lon').value;
+
+            // Validasi sederhana
+            if (!description || !photo) {
+                errorMessageContainer.innerText = 'Deskripsi dan foto tidak boleh kosong!';
+                return;
+            }
+
+            try {
+                await StoryApi.addNewStory({ description, photo, lat, lon });
+                alert('Cerita berhasil ditambahkan!');
+                window.location.hash = '#/'; // Arahkan kembali ke beranda
+            } catch (error) {
+                errorMessageContainer.innerText = `Error: ${error.message}`;
+            }
+        });
+    },
+};
+
+export default AddStory;
