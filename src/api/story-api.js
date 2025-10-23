@@ -52,11 +52,10 @@ const StoryApi = {
         return responseJson;
     },
 
-    async getAllStories() {
-        const response = await fetch(`${CONFIG.BASE_URL}/stories`, {
+    async getAllStories(page = 1, size = 12) {
+        const response = await fetch(`${CONFIG.BASE_URL}/stories?page=${page}&size=${size}`, {
             method: 'GET',
             headers: {
-                // Panggil fungsi helper yang sudah dipisah
                 Authorization: `Bearer ${getUserToken()}`,
             },
         });

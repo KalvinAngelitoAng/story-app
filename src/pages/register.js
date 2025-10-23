@@ -21,12 +21,15 @@ const Register = {
           <button type="submit" class="form-button">Register</button>
         </form>
         <div id="error-message" class="error-message"></div>
+        <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
       </div>
     `;
     },
 
     async afterRender() {
         const registerForm = document.querySelector('#register-form');
+        const loadingSpinner = document.querySelector('#loading-spinner');
+
         registerForm.addEventListener('submit', async (event) => {
             event.preventDefault();
 
@@ -35,12 +38,17 @@ const Register = {
             const password = document.querySelector('#password').value;
             const errorMessageContainer = document.querySelector('#error-message');
 
+            loadingSpinner.style.display = 'block';
+            errorMessageContainer.innerText = '';
+
             try {
                 await StoryApi.register({ name, email, password });
                 alert('Registrasi berhasil! Silakan login.');
                 window.location.hash = '#/login';
             } catch (error) {
                 errorMessageContainer.innerText = `Error: ${error.message}`;
+            } finally {
+                loadingSpinner.style.display = 'none';
             }
         });
     },
