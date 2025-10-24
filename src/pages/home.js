@@ -14,7 +14,7 @@ const Home = {
     if (isGuest) {
       return `
         <div class="auth-prompt">
-          <h2>Akses Terbatas untuk Tamu</h2>
+          <h1>Akses Terbatas untuk Tamu</h1>
           <p>Silakan <a href="#/login">login</a> atau <a href="#/register">register</a> untuk mengakses semua fitur.</p>
         </div>
       `;

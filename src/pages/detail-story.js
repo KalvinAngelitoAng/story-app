@@ -50,7 +50,7 @@ const DetailStory = {
       console.error(error);
       storyContainer.innerHTML = `
         <div class="story-not-found">
-          <h2>Oops! Cerita Tidak Ditemukan</h2>
+          <h1>Oops! Cerita Tidak Ditemukan</h1>
           <p>Maaf, detail untuk cerita ini tidak tersedia atau mungkin telah dihapus.</p>
           <a href="#/" class="form-button">Kembali ke Beranda</a>
         </div>
@@ -63,4 +63,4 @@ const DetailStory = {
 };
 
 export default DetailStory;
-
+

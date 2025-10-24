@@ -11,7 +11,7 @@ const AddStory = {
     const isGuest = sessionStorage.getItem('guest') === 'true';
     return `
       <div class="form-container">
-        <h2>Buat Cerita Baru</h2>
+        <h1>Buat Cerita Baru</h1>
         ${isGuest ? '<p>Anda masuk sebagai <strong>Guest</strong>. <a href="#/login">Login atau Register</a> untuk pengalaman penuh.</p>' : ''}
         <form id="add-story-form">
           <div class="form-group">
