@@ -1,0 +1,2 @@
+APP_URL=https://kalvinangelitoang.github.io/story-app/
+MAP_SERVICE_API_KEY=<api_key>
