@@ -13,26 +13,26 @@ export default defineConfig({
         theme_color: "#ffffff",
         icons: [
           {
-            src: "icons/icon-192x192.png",
+            src: "/story-app/icons/icon-192x192.png",
             sizes: "192x192",
             type: "image/png",
           },
           {
-            src: "icons/icon-512x512.png",
+            src: "/story-app/icons/icon-512x512.png",
             sizes: "512x512",
             type: "image/png",
           },
         ],
         screenshots: [
           {
-            src: "images/screenshot1.png",
+            src: "/story-app/images/screenshot1.png",
             sizes: "1280x720",
             type: "image/png",
             form_factor: "wide",
             label: "Homepage",
           },
           {
-            src: "images/screenshot2.png",
+            src: "/story-app/images/screenshot2.png",
             sizes: "720x1280",
             type: "image/png",
             form_factor: "narrow",
@@ -44,8 +44,8 @@ export default defineConfig({
             name: "Add Story",
             short_name: "Add Story",
             description: "Add a new story",
-            url: "#/add-story",
-            icons: [{ src: "icons/add-icon.png", sizes: "192x192" }],
+            url: "/story-app/#/add-story",
+            icons: [{ src: "/story-app/icons/add-icon.png", sizes: "192x192" }],
           },
         ],
       },
