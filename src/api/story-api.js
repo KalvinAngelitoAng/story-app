@@ -1,118 +1,142 @@
 const CONFIG = {
-    BASE_URL: 'https://story-api.dicoding.dev/v1',
+  BASE_URL: "https://story-api.dicoding.dev/v1",
 };
 
 // --- Fungsi Helper (dipisahkan dari objek) ---
 function getUserToken() {
-    return localStorage.getItem('user-token');
+  return localStorage.getItem("user-token");
 }
 
 function saveUserToken(token) {
-    localStorage.setItem('user-token', token);
+  localStorage.setItem("user-token", token);
 }
 
 // --- Objek API ---
 const StoryApi = {
-    async register({ name, email, password }) {
-        const response = await fetch(`${CONFIG.BASE_URL}/register`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name, email, password }),
-        });
+  async register({ name, email, password }) {
+    const response = await fetch(`${CONFIG.BASE_URL}/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-        const responseJson = await response.json();
+    const responseJson = await response.json();
 
-        if (responseJson.error) {
-            throw new Error(responseJson.message);
-        }
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
 
-        return responseJson;
-    },
+    return responseJson;
+  },
 
-    async login({ email, password }) {
-        const response = await fetch(`${CONFIG.BASE_URL}/login`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email, password }),
-        });
+  async addNewStoryGuest({ description, photo, lat, lon }) {
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("photo", photo);
+    if (lat) formData.append("lat", lat);
+    if (lon) formData.append("lon", lon);
 
-        const responseJson = await response.json();
+    const response = await fetch(`${CONFIG.BASE_URL}/stories/guest`, {
+      method: "POST",
+      body: formData,
+    });
 
-        if (responseJson.error) {
-            throw new Error(responseJson.message);
-        }
+    const responseJson = await response.json();
 
-        // Panggil fungsi helper yang sudah dipisah
-        saveUserToken(responseJson.loginResult.token);
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
 
-        return responseJson;
-    },
+    return responseJson;
+  },
 
-    async getAllStories(page = 1, size = 12) {
-        const response = await fetch(`${CONFIG.BASE_URL}/stories?page=${page}&size=${size}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${getUserToken()}`,
-            },
-        });
+  async login({ email, password }) {
+    const response = await fetch(`${CONFIG.BASE_URL}/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
-        const responseJson = await response.json();
+    const responseJson = await response.json();
 
-        if (responseJson.error) {
-            throw new Error(responseJson.message);
-        }
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
 
-        return responseJson;
-    },
+    // Panggil fungsi helper yang sudah dipisah
+    saveUserToken(responseJson.loginResult.token);
 
-    async getStoryDetail(id) {
-        const response = await fetch(`${CONFIG.BASE_URL}/stories/${id}`, {
-            headers: {
-                Authorization: `Bearer ${getUserToken()}`,
-            },
-        });
+    return responseJson;
+  },
 
-        const responseJson = await response.json();
+  async getAllStories(page = 1, size = 12) {
+    const response = await fetch(
+      `${CONFIG.BASE_URL}/stories?page=${page}&size=${size}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${getUserToken()}`,
+        },
+      }
+    );
 
-        if (responseJson.error) {
-            throw new Error(responseJson.message);
-        }
+    const responseJson = await response.json();
 
-        return responseJson;
-    },
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
 
-    async addNewStory({ description, photo, lat, lon }) {
-        const formData = new FormData();
-        formData.append('description', description);
-        formData.append('photo', photo);
-        // Hanya tambahkan lat/lon jika nilainya ada
-        if (lat) formData.append('lat', lat);
-        if (lon) formData.append('lon', lon);
+    return responseJson;
+  },
 
-        const response = await fetch(`${CONFIG.BASE_URL}/stories`, {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${getUserToken()}`,
-            },
-            body: formData, // Kirim sebagai FormData
-        });
+  async getStoryDetail(id) {
+    const response = await fetch(`${CONFIG.BASE_URL}/stories/${id}`, {
+      headers: {
+        Authorization: `Bearer ${getUserToken()}`,
+      },
+    });
 
-        const responseJson = await response.json();
+    const responseJson = await response.json();
 
-        if (responseJson.error) {
-            throw new Error(responseJson.message);
-        }
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
 
-        return responseJson;
-    },
+    return responseJson;
+  },
 
-    logout() {
-        localStorage.removeItem('user-token');
-    },
+  async addNewStory({ description, photo, lat, lon }) {
+    const formData = new FormData();
+    formData.append("description", description);
+    formData.append("photo", photo);
+    // Hanya tambahkan lat/lon jika nilainya ada
+    if (lat) formData.append("lat", lat);
+    if (lon) formData.append("lon", lon);
+
+    const response = await fetch(`${CONFIG.BASE_URL}/stories`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${getUserToken()}`,
+      },
+      body: formData, // Kirim sebagai FormData
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson;
+  },
+
+  logout() {
+    localStorage.removeItem("user-token");
+  },
 };
 
 export default StoryApi;

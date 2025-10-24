@@ -20,12 +20,16 @@ const UrlParser = {
     },
 
     _urlCombiner(splitedUrl) {
-        return (
-            (splitedUrl.resource ? `/${splitedUrl.resource}` : '/') +
-            (splitedUrl.id ? '/:id' : '') +
-            (splitedUrl.verb ? `/${splitedUrl.verb}` : '')
-        );
+        const resource = splitedUrl.resource ? `/${splitedUrl.resource}` : '/';
+        const id = splitedUrl.id ? '/:id' : '';
+        const verb = splitedUrl.verb ? `/${splitedUrl.verb}` : '';
+
+        if (resource === '/story' && id) {
+            return '/story/:id';
+        }
+
+        return `${resource}${verb}`;
     },
 };
 
-export default UrlParser;
+export default UrlParser;

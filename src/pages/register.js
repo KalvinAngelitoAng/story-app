@@ -1,4 +1,5 @@
 import StoryApi from '../api/story-api.js';
+import Notification from '../components/notification.js';
 
 const Register = {
     async render() {
@@ -43,7 +44,7 @@ const Register = {
 
             try {
                 await StoryApi.register({ name, email, password });
-                alert('Registrasi berhasil! Silakan login.');
+                Notification.show({ message: 'Registrasi berhasil! Silakan login.' });
                 window.location.hash = '#/login';
             } catch (error) {
                 errorMessageContainer.innerText = `Error: ${error.message}`;

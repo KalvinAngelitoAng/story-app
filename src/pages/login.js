@@ -1,4 +1,5 @@
 import StoryApi from '../api/story-api.js';
+import Notification from '../components/notification.js';
 
 const Login = {
     async render() {
@@ -12,9 +13,10 @@ const Login = {
           </div>
           <div class="form-group">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" class="form-input" required>
+            <input type="password" id="password" name="password" class="form-input" required autocomplete="current-password">
           </div>
           <button type="submit" class="form-button">Login</button>
+          <button type="button" id="guest-login-btn" class="form-button">Masuk sebagai Guest</button>
         </form>
         <div id="error-message" class="error-message"></div>
         <div id="loading-spinner" class="loading-spinner" style="display: none;"></div>
@@ -25,6 +27,12 @@ const Login = {
     async afterRender() {
         const loginForm = document.querySelector('#login-form');
         const loadingSpinner = document.querySelector('#loading-spinner');
+
+        const guestLoginBtn = document.querySelector('#guest-login-btn');
+        guestLoginBtn.addEventListener('click', () => {
+            sessionStorage.setItem('guest', 'true');
+            window.location.hash = '#/add-story';
+        });
 
         loginForm.addEventListener('submit', async (event) => {
             event.preventDefault();
@@ -38,7 +46,8 @@ const Login = {
 
             try {
                 await StoryApi.login({ email, password });
-                alert('Login berhasil!');
+                sessionStorage.removeItem('guest');
+                Notification.show({ message: 'Login berhasil!' });
                 window.location.hash = '#/';
             } catch (error) {
                 errorMessageContainer.innerText = `Error: ${error.message}`;
@@ -49,4 +58,4 @@ const Login = {
     },
 };
 
-export default Login;
+export default Login;

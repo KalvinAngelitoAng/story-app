@@ -3,6 +3,7 @@ import StoryApi from "../api/story-api.js";
 const DetailStory = {
   async render() {
     return `
+      <div class="loading-spinner" style="display: none;"></div>
       <div id="story-detail-container">
         <p>Memuat detail cerita...</p>
       </div>
@@ -12,11 +13,15 @@ const DetailStory = {
   async afterRender() {
     const storyId = window.location.hash.split("/")[2];
     const storyContainer = document.querySelector("#story-detail-container");
+    const loadingSpinner = document.querySelector(".loading-spinner");
 
     if (!storyId) {
       storyContainer.innerHTML = "<p>ID Cerita tidak ditemukan.</p>";
       return;
     }
+
+    loadingSpinner.style.display = 'block';
+    storyContainer.style.display = 'none';
 
     try {
       const response = await StoryApi.getStoryDetail(storyId);
@@ -50,8 +55,12 @@ const DetailStory = {
           <a href="#/" class="form-button">Kembali ke Beranda</a>
         </div>
       `;
+    } finally {
+      loadingSpinner.style.display = 'none';
+      storyContainer.style.display = 'block';
     }
   },
 };
 
 export default DetailStory;
+

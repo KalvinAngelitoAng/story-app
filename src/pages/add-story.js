@@ -1,14 +1,18 @@
 import StoryApi from "../api/story-api.js";
+import IdbHelper from "../utils/idb-helper.js";
 import L from "leaflet";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
+import Notification from '../components/notification.js';
 
 const AddStory = {
   async render() {
+    const isGuest = sessionStorage.getItem('guest') === 'true';
     return `
       <div class="form-container">
         <h2>Buat Cerita Baru</h2>
+        ${isGuest ? '<p>Anda masuk sebagai <strong>Guest</strong>. <a href="#/login">Login atau Register</a> untuk pengalaman penuh.</p>' : ''}
         <form id="add-story-form">
           <div class="form-group">
             <label for="description">Deskripsi</label>
@@ -150,7 +154,7 @@ const AddStory = {
         cameraContainer.style.display = "block";
       } catch (error) {
         console.error("Error accessing camera:", error);
-        alert("Tidak bisa mengakses kamera. Pastikan Anda memberikan izin.");
+        Notification.show({ message: "Tidak bisa mengakses kamera. Pastikan Anda memberikan izin.", type: 'error' });
       }
     });
 
@@ -180,25 +184,61 @@ const AddStory = {
     addStoryForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      const submitButton = addStoryForm.querySelector('button[type="submit"]');
+      const originalButtonText = submitButton.innerHTML;
+      submitButton.disabled = true;
+      submitButton.innerHTML = '<span class="loading-spinner" style="border-left-color: #fff; width: 20px; height: 20px; display: inline-block; margin: 0 auto;"></span> Mengunggah...';
+
       const errorMessageContainer = document.querySelector("#error-message");
       const description = document.querySelector("#description").value;
       const photo = document.querySelector("#photo").files[0];
       const lat = document.querySelector("#lat").value;
       const lon = document.querySelector("#lon").value;
+      const isGuest = sessionStorage.getItem('guest') === 'true';
 
       // Validasi sederhana
       if (!description || !photo) {
         errorMessageContainer.innerText =
           "Deskripsi dan foto tidak boleh kosong!";
+        
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonText;
+        return;
+      }
+
+      if (!navigator.onLine) {
+        console.log("Offline mode detected. Saving story to IndexedDB.");
+        try {
+          const newStory = { description, photo, lat, lon };
+          await IdbHelper.put(newStory);
+          Notification.show({ message: "Anda sedang offline. Cerita disimpan secara lokal dan akan diunggah saat kembali online." });
+
+          if ('serviceWorker' in navigator && 'SyncManager' in window) {
+            navigator.serviceWorker.ready.then(function(swRegistration) {
+              return swRegistration.sync.register('sync-new-stories');
+            });
+          }
+        } catch (error) {
+          console.error("Failed to save story to IndexedDB:", error);
+          Notification.show({ message: "Gagal menyimpan cerita secara lokal. Silakan coba lagi." });
+        }
+        window.location.hash = "#/";
         return;
       }
 
       try {
-        await StoryApi.addNewStory({ description, photo, lat, lon });
-        alert("Cerita berhasil ditambahkan!");
+        if (isGuest) {
+          await StoryApi.addNewStoryGuest({ description, photo, lat, lon });
+        } else {
+          await StoryApi.addNewStory({ description, photo, lat, lon });
+        }
+        Notification.show({ message: "Cerita berhasil ditambahkan!" });
         window.location.hash = "#/"; // Arahkan kembali ke beranda
       } catch (error) {
         errorMessageContainer.innerText = `Error: ${error.message}`;
+      } finally {
+        submitButton.disabled = false;
+        submitButton.innerHTML = originalButtonText;
       }
     });
   },
