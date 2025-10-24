@@ -2,10 +2,11 @@ import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
+  base: "/story-app/",
   plugins: [
     VitePWA({
       manifest: {
-        id: "/",
+        id: "/story-app/",
         name: "Story App",
         short_name: "Story App",
         description: "A simple story app built with PWA",
