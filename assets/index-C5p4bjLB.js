@@ -67,7 +67,7 @@
               ${x.description.substring(0,30)}...
             </div>`),G[x.id]=rt,q.addEventListener("click",et=>{et.target.tagName.toLowerCase()!=="a"&&(b.flyTo([x.lat,x.lon],12),rt.openPopup())})}q.addEventListener("keydown",rt=>{rt.key==="Enter"?window.location.hash=`#/story/${x.id}`:x.lat&&x.lon&&(rt.key==="ArrowUp"||rt.key==="ArrowDown")&&(rt.preventDefault(),b.flyTo([x.lat,x.lon],12),G[x.id].openPopup())}),p.appendChild(q)})},nt=()=>{const G=document.querySelector("#search-input").value,Q=document.querySelector("#start-date").value,W=document.querySelector("#end-date").value;let $=D;G&&($=$.filter(x=>x.description.toLowerCase().includes(G.toLowerCase())||x.name.toLowerCase().includes(G.toLowerCase()))),Q&&W&&($=$.filter(x=>{const q=new Date(x.createdAt);return q>=new Date(Q)&&q<=new Date(W)})),A=$,k=1,R(),I()};(async()=>{try{Z.style.display="block",D=await U(),await Ft.putAllStories(D)}catch{console.log("Failed to fetch from network, trying IndexedDB..."),D=await Ft.getAllStories()}finally{Z.style.display="none",A=D,R(),I()}})();const yt=document.querySelector("#search-input"),pt=document.querySelector("#start-date"),kt=document.querySelector("#end-date");yt.addEventListener("input",nt),pt.addEventListener("change",nt),kt.addEventListener("change",nt)},async renderNotificationButton(){const a=document.querySelector("#notification-bar");await(await navigator.serviceWorker.ready).pushManager.getSubscription()?(a.innerHTML='<button id="notification-toggle" class="form-button form-button--secondary">Nonaktifkan Notifikasi</button>',document.querySelector("#notification-toggle").addEventListener("click",async()=>{await Li.unsubscribe(),this.renderNotificationButton()})):(a.innerHTML='<button id="notification-toggle" class="form-button">Aktifkan Notifikasi</button>',document.querySelector("#notification-toggle").addEventListener("click",async()=>{await Li.subscribe(),this.renderNotificationButton()}))}},Js={async render(){return`
       <div class="form-container">
-        <h1>Login</h1>
+        <h2>Login</h2>
         <form id="login-form">
           <div class="form-group">
             <label for="email">Email</label>
@@ -85,7 +85,7 @@
       </div>
     `},async afterRender(){const a=document.querySelector("#login-form"),l=document.querySelector("#loading-spinner");document.querySelector("#guest-login-btn").addEventListener("click",()=>{sessionStorage.setItem("guest","true"),window.location.hash="#/add-story"}),a.addEventListener("submit",async m=>{m.preventDefault();const d=document.querySelector("#email").value,v=document.querySelector("#password").value,_=document.querySelector("#error-message");l.style.display="block",_.innerText="";try{await Pt.login({email:d,password:v}),sessionStorage.removeItem("guest"),ht.show({message:"Login berhasil!"}),window.location.hash="#/"}catch(b){_.innerText=`Error: ${b.message}`}finally{l.style.display="none"}})}},Ys={async render(){return`
       <div class="form-container">
-        <h1>Register Akun Baru</h1>
+        <h2>Register Akun Baru</h2>
         <form id="register-form">
           <div class="form-group">
             <label for="name">Nama</label>
@@ -106,7 +106,7 @@
       </div>
     `},async afterRender(){const a=document.querySelector("#register-form"),l=document.querySelector("#loading-spinner");a.addEventListener("submit",async h=>{h.preventDefault();const m=document.querySelector("#name").value,d=document.querySelector("#email").value,v=document.querySelector("#password").value,_=document.querySelector("#error-message");l.style.display="block",_.innerText="";try{await Pt.register({name:m,email:d,password:v}),ht.show({message:"Registrasi berhasil! Silakan login."}),window.location.hash="#/login"}catch(b){_.innerText=`Error: ${b.message}`}finally{l.style.display="none"}})}},Xs="story-app-database",ge="pending-stories",Qs=2,xi=Xn(Xs,Qs,{upgrade(a){a.objectStoreNames.contains(ge)||a.createObjectStore(ge,{keyPath:"id",autoIncrement:!0})}}),$s={async getAll(){return(await xi).getAll(ge)},async put(a){return(await xi).put(ge,a)},async delete(a){return(await xi).delete(ge,a)}},tr={async render(){return`
       <div class="form-container">
-        <h1>Buat Cerita Baru</h1>
+        <h2>Buat Cerita Baru</h2>
         ${sessionStorage.getItem("guest")==="true"?'<p>Anda masuk sebagai <strong>Guest</strong>. <a href="#/login">Login atau Register</a> untuk pengalaman penuh.</p>':""}
         <form id="add-story-form">
           <div class="form-group">
@@ -158,7 +158,7 @@
         </div>
       `}catch(m){console.error(m),l.innerHTML=`
         <div class="story-not-found">
-          <h1>Oops! Cerita Tidak Ditemukan</h1>
+          <h2>Oops! Cerita Tidak Ditemukan</h2>
           <p>Maaf, detail untuk cerita ini tidak tersedia atau mungkin telah dihapus.</p>
           <a href="#/" class="form-button">Kembali ke Beranda</a>
         </div>
