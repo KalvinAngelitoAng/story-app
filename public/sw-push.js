@@ -24,23 +24,45 @@ self.addEventListener('push', (event) => {
 self.addEventListener('notificationclick', (event) => {
   event.notification.close();
 
-  const urlToOpen = event.notification.data.url;
+  const urlToOpen = event.notification.data?.url || '/story-app/';
+  const baseUrl = self.location.origin;
+  const fullUrl = urlToOpen.startsWith('http') ? urlToOpen : `${baseUrl}${urlToOpen}`;
 
   event.waitUntil(
     clients.matchAll({
       type: 'window',
       includeUncontrolled: true,
     }).then((windowClients) => {
-      // Cek apakah ada tab yang sudah terbuka dengan URL yang sama
+      // Check if there's already a tab open with the same origin
       for (let i = 0; i < windowClients.length; i++) {
         const client = windowClients[i];
-        if (client.url === urlToOpen && 'focus' in client) {
-          return client.focus();
+        const clientUrl = new URL(client.url);
+        const targetUrl = new URL(fullUrl);
+        
+        if (clientUrl.origin === targetUrl.origin && 'focus' in client) {
+          // Navigate to the target URL and focus the tab
+          return client.focus().then(() => {
+            if ('navigate' in client) {
+              return client.navigate(fullUrl);
+            } else {
+              // Fallback: send message to client to navigate
+              client.postMessage({
+                type: 'NAVIGATE',
+                url: targetUrl.pathname + targetUrl.hash
+              });
+            }
+          });
         }
       }
-      // Jika tidak ada, buka tab baru
+      // If no tab is open, open a new one
       if (clients.openWindow) {
-        return clients.openWindow(urlToOpen);
+        return clients.openWindow(fullUrl);
+      }
+    }).catch((error) => {
+      console.error('Error handling notification click:', error);
+      // Fallback: try to open window anyway
+      if (clients.openWindow) {
+        return clients.openWindow(fullUrl);
       }
     })
   );

@@ -9,22 +9,21 @@ class App {
   }
 
   async renderPage() {
-    // 1. Hapus class animasi untuk me-reset
-    this._content.classList.remove("fade-in");
-
-    // 2. Paksa browser untuk "reflow", ini trik agar animasi bisa berjalan lagi
-    // eslint-disable-next-line no-void
-    void this._content.offsetWidth;
-
     const url = UrlParser.parseActiveUrlWithCombiner();
     const page = routes[url];
 
-    // 3. Render konten halaman baru
-    this._content.innerHTML = await page.render();
-    await page.afterRender();
+    // Alternative DOM update for browsers that do not support view transition
+    if (!document.startViewTransition) {
+      this._content.innerHTML = await page.render();
+      await page.afterRender();
+      return;
+    }
 
-    // 4. Tambahkan kembali class animasi agar efek transisi berjalan
-    this._content.classList.add("fade-in");
+    // Update DOM with view transition
+    document.startViewTransition(async () => {
+      this._content.innerHTML = await page.render();
+      await page.afterRender();
+    });
   }
 }
 

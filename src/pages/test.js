@@ -17,7 +17,7 @@ const Home = {
         const userToken = localStorage.getItem('user-token');
 
         if (!userToken) {
-            // --- KONDISI JIKA PENGGUNA BELUM LOGIN ---
+
             homeContentContainer.innerHTML = `
         <div class="auth-prompt">
           <h2>Anda Belum Login</h2>
@@ -28,10 +28,10 @@ const Home = {
           </div>
         </div>
       `;
-            return; // Hentikan eksekusi fungsi di sini
+            return;
         }
 
-        // --- KONDISI JIKA PENGGUNA SUDAH LOGIN (Kode yang sudah ada) ---
+
         homeContentContainer.innerHTML = `
       <div id="map" style="height: 400px; width: 100%; margin-bottom: 2rem;"></div>
       <div id="stories-container" class="stories-list">
@@ -39,7 +39,7 @@ const Home = {
       </div>
     `;
 
-        // Perbaiki path ikon default Leaflet
+
         delete L.Icon.Default.prototype._getIconUrl;
         L.Icon.Default.mergeOptions({
             iconUrl: markerIcon,
@@ -67,7 +67,7 @@ const Home = {
                 const storyElement = document.createElement('div');
                 storyElement.classList.add('story-card');
 
-                // 1. Membuat elemen bisa di-fokus oleh keyboard
+
                 storyElement.setAttribute('tabindex', '0');
 
                 const formattedDate = new Date(story.createdAt).toLocaleDateString('id-ID', {
@@ -83,7 +83,7 @@ const Home = {
                     </div>
                     `;
 
-                // 2. Menambahkan event untuk klik dan tombol Enter
+
                 const handleCardClick = () => {
                     window.location.hash = `#/story/${story.id}`;
                 };
@@ -97,7 +97,7 @@ const Home = {
 
                 storiesContainer.appendChild(storyElement);
 
-                // Tambahkan Marker ke Peta jika ada lokasi
+
                 if (story.lat && story.lon) {
                     const marker = L.marker([story.lat, story.lon]).addTo(map);
                     marker.bindPopup(`
@@ -111,7 +111,7 @@ const Home = {
             });
 
         } catch (error) {
-            // Blok catch ini sekarang hanya akan menangani error untuk pengguna yang sudah login
+
             storiesContainer.innerHTML = `<p>Error: Gagal memuat cerita. Coba refresh halaman.</p>`;
         }
     },

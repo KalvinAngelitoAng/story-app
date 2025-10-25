@@ -14,8 +14,13 @@ const Bookmarks = {
     const storiesContainer = document.querySelector('#bookmarked-stories');
     const stories = await StoryDb.getAllBookmarkedStories();
 
+    // Selalu bersihkan kontainer sebelum render untuk mencegah duplikasi
+    storiesContainer.innerHTML = '';
+
     if (stories.length === 0) {
       storiesContainer.innerHTML = '<p>You have no bookmarked stories.</p>';
+      // Pastikan handler tunggal
+      storiesContainer.onclick = null;
       return;
     }
 
@@ -37,13 +42,14 @@ const Bookmarks = {
       storiesContainer.appendChild(storyElement);
     });
 
-    storiesContainer.addEventListener('click', async (event) => {
-      if (event.target.classList.contains('remove-bookmark-button')) {
-        const storyId = event.target.dataset.storyId;
+    storiesContainer.onclick = async (event) => {
+      const btn = event.target.closest('.remove-bookmark-button');
+      if (btn) {
+        const storyId = btn.dataset.storyId;
         await StoryDb.deleteBookmarkedStory(storyId);
-        this.afterRender(); // Re-render the list
+        await this.afterRender(); // Re-render the list
       }
-    });
+    };
   },
 };
 

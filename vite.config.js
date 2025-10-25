@@ -51,14 +51,23 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,png,jpg,jpeg,svg}"],
+        skipWaiting: true,
+        clientsClaim: true,
         runtimeCaching: [
           {
             urlPattern: /^https?:\/\/story-api.dicoding.dev\/v1\/stories/,
             handler: "NetworkFirst",
             options: {
               cacheName: "api-cache",
+              networkTimeoutSeconds: 3,
               cacheableResponse: {
                 statuses: [200],
+              },
+              backgroundSync: {
+                name: "api-queue",
+                options: {
+                  maxRetentionTime: 24 * 60, // 24 hours in minutes
+                },
               },
             },
           },

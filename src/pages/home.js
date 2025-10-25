@@ -61,7 +61,6 @@ const Home = {
     const isGuest = sessionStorage.getItem("guest") === "true";
 
     if (isGuest) {
-      // Guest logic is handled in render, so nothing to do here.
       return;
     }
 
@@ -79,7 +78,6 @@ const Home = {
       return;
     }
 
-    // Initialize Push Notification
     PushNotification.init();
     this.renderNotificationButton();
 
@@ -147,7 +145,7 @@ const Home = {
 
       while (hasMore) {
         try {
-          const response = await StoryApi.getAllStories(page, 50); // Fetch 50 at a time
+          const response = await StoryApi.getAllStories(page, 50);
           if (response.listStory.length > 0) {
             allStories = allStories.concat(response.listStory);
             page++;
@@ -156,7 +154,7 @@ const Home = {
           }
         } catch (error) {
           console.error("Error fetching all stories:", error);
-          hasMore = false; // Stop on error
+          hasMore = false;
         }
       }
       return allStories;
@@ -321,7 +319,7 @@ const Home = {
       }
 
       currentFilteredStories = filtered;
-      currentPage = 1; // Reset to first page on filter change
+      currentPage = 1;
       renderStoryList();
       setupPagination();
     };

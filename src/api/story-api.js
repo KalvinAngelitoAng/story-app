@@ -2,7 +2,6 @@ const CONFIG = {
   BASE_URL: "https://story-api.dicoding.dev/v1",
 };
 
-// --- Fungsi Helper (dipisahkan dari objek) ---
 function getUserToken() {
   return localStorage.getItem("user-token");
 }
@@ -11,7 +10,6 @@ function saveUserToken(token) {
   localStorage.setItem("user-token", token);
 }
 
-// --- Objek API ---
 const StoryApi = {
   async register({ name, email, password }) {
     const response = await fetch(`${CONFIG.BASE_URL}/register`, {
@@ -67,7 +65,6 @@ const StoryApi = {
       throw new Error(responseJson.message);
     }
 
-    // Panggil fungsi helper yang sudah dipisah
     saveUserToken(responseJson.loginResult.token);
 
     return responseJson;
@@ -113,7 +110,7 @@ const StoryApi = {
     const formData = new FormData();
     formData.append("description", description);
     formData.append("photo", photo);
-    // Hanya tambahkan lat/lon jika nilainya ada
+
     if (lat) formData.append("lat", lat);
     if (lon) formData.append("lon", lon);
 
@@ -122,7 +119,67 @@ const StoryApi = {
       headers: {
         Authorization: `Bearer ${getUserToken()}`,
       },
-      body: formData, // Kirim sebagai FormData
+      body: formData,
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson;
+  },
+
+  async subscribeNotification(subscription) {
+    const subscriptionData = {
+      endpoint: subscription.endpoint,
+      keys: {
+        p256dh: subscription.getKey
+          ? btoa(
+              String.fromCharCode(
+                ...new Uint8Array(subscription.getKey("p256dh"))
+              )
+            )
+          : subscription.keys?.p256dh,
+        auth: subscription.getKey
+          ? btoa(
+              String.fromCharCode(
+                ...new Uint8Array(subscription.getKey("auth"))
+              )
+            )
+          : subscription.keys?.auth,
+      },
+    };
+
+    const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${getUserToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(subscriptionData),
+    });
+
+    const responseJson = await response.json();
+
+    if (responseJson.error) {
+      throw new Error(responseJson.message);
+    }
+
+    return responseJson;
+  },
+
+  async unsubscribeNotification(endpoint) {
+    const response = await fetch(`${CONFIG.BASE_URL}/notifications/subscribe`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${getUserToken()}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        endpoint: endpoint,
+      }),
     });
 
     const responseJson = await response.json();

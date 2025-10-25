@@ -51,7 +51,7 @@ const AddStory = {
   },
 
   async afterRender() {
-    // Perbaiki path ikon default Leaflet
+
     delete L.Icon.Default.prototype._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconUrl: markerIcon,
@@ -122,16 +122,16 @@ const AddStory = {
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
 
-      // Simpan koordinat ke input tersembunyi
+
       latInput.value = lat;
       lonInput.value = lng;
 
-      // Tampilkan koordinat ke pengguna
+
       coordsDisplay.innerText = `Lat: ${lat.toFixed(4)}, Lon: ${lng.toFixed(
         4
       )}`;
 
-      // Pindahkan marker ke lokasi baru (atau buat jika belum ada)
+
       if (marker) {
         marker.setLatLng(e.latlng);
       } else {
@@ -139,7 +139,7 @@ const AddStory = {
       }
     });
 
-    // --- Logika Kamera ---
+
     const cameraButton = document.querySelector("#camera-button");
     const cameraContainer = document.querySelector("#camera-container");
     const video = document.querySelector("#camera-feed");
@@ -172,10 +172,10 @@ const AddStory = {
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         photoInput.files = dataTransfer.files;
-        previewImage(file); // Tambahkan pratinjau untuk gambar dari kamera
+        previewImage(file);
       }, "image/jpeg");
 
-      // Matikan kamera setelah mengambil gambar
+
       stream.getTracks().forEach((track) => track.stop());
       cameraContainer.style.display = "none";
     });
@@ -196,7 +196,7 @@ const AddStory = {
       const lon = document.querySelector("#lon").value;
       const isGuest = sessionStorage.getItem('guest') === 'true';
 
-      // Validasi sederhana
+
       if (!description || !photo) {
         errorMessageContainer.innerText =
           "Deskripsi dan foto tidak boleh kosong!";
@@ -233,7 +233,7 @@ const AddStory = {
           await StoryApi.addNewStory({ description, photo, lat, lon });
         }
         Notification.show({ message: "Cerita berhasil ditambahkan!" });
-        window.location.hash = "#/"; // Arahkan kembali ke beranda
+        window.location.hash = "#/";
       } catch (error) {
         errorMessageContainer.innerText = `Error: ${error.message}`;
       } finally {
