@@ -22,17 +22,20 @@ const updateNavigation = () => {
   const loginNav = document.querySelector("#login-nav");
   const registerNav = document.querySelector("#register-nav");
   const addStoryNav = document.querySelector("#add-story-nav");
+  const bookmarksNav = document.querySelector("#bookmarks-nav");
   const logoutNav = document.querySelector("#logout-nav");
 
   if (userToken) {
     loginNav.style.display = "none";
     registerNav.style.display = "none";
     addStoryNav.style.display = "inline";
+    bookmarksNav.style.display = "inline";
     logoutNav.style.display = "inline";
   } else {
     loginNav.style.display = "inline";
     registerNav.style.display = "inline";
     addStoryNav.style.display = "none";
+    bookmarksNav.style.display = "none";
     logoutNav.style.display = "none";
   }
 };
@@ -110,3 +113,4 @@ window.addEventListener("load", () => {
     }
   });
 });
+

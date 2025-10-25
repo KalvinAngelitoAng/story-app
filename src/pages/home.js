@@ -222,9 +222,39 @@ const Home = {
               <h3>${story.name}</h3>
               <small class="story-date">${formattedDate}</small>
               <p>${story.description}</p>
-              <a href="#/story/${story.id}" class="story-card__button">Lihat Detail</a>
+              <div class="story-card__actions">
+                <a href="#/story/${story.id}" class="story-card__button">Lihat Detail</a>
+                <button class="bookmark-button" data-story-id="${story.id}">Bookmark</button>
+              </div>
           </div>
         `;
+
+        const bookmarkButton = storyElement.querySelector(".bookmark-button");
+        StoryDb.getBookmarkedStory(story.id).then((bookmarkedStory) => {
+          if (bookmarkedStory) {
+            bookmarkButton.textContent = "Bookmarked";
+            bookmarkButton.classList.add("bookmarked");
+          }
+        });
+
+        bookmarkButton.addEventListener("click", async (event) => {
+          event.stopPropagation();
+          const storyId = event.target.dataset.storyId;
+          const isBookmarked = bookmarkButton.classList.contains("bookmarked");
+
+          if (isBookmarked) {
+            await StoryDb.deleteBookmarkedStory(storyId);
+            bookmarkButton.textContent = "Bookmark";
+            bookmarkButton.classList.remove("bookmarked");
+          } else {
+            const storyToBookmark = allStories.find((s) => s.id === storyId);
+            if (storyToBookmark) {
+              await StoryDb.bookmarkStory(storyToBookmark);
+              bookmarkButton.textContent = "Bookmarked";
+              bookmarkButton.classList.add("bookmarked");
+            }
+          }
+        });
 
         if (story.lat && story.lon) {
           const marker = L.marker([story.lat, story.lon]).addTo(map);

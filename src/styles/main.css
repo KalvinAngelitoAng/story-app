@@ -221,21 +221,51 @@ footer {
 }
 
 /* Styling untuk tombol di kartu cerita */
-.story-card__button {
+.story-card__button, .bookmark-button, .remove-bookmark-button {
   display: inline-block;
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background-color: #007bff;
   color: white;
   text-decoration: none;
   border-radius: 4px;
   text-align: center;
   transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.story-card__button {
+  background-color: #007bff;
 }
 
 .story-card__button:hover {
   background-color: #0056b3;
 }
+
+.bookmark-button {
+  background-color: #ffc107; /* Yellow */
+}
+
+.bookmark-button:hover {
+  background-color: #e0a800;
+}
+
+.bookmark-button.bookmarked {
+    background-color: #28a745; /* Green when bookmarked */
+}
+
+.bookmark-button.bookmarked:hover {
+    background-color: #218838;
+}
+
+.remove-bookmark-button {
+  background-color: #dc3545; /* Red */
+}
+
+.remove-bookmark-button:hover {
+  background-color: #c82333;
+}
+
 
 /* Styling untuk tanggal di kartu cerita */
 .story-date {
@@ -451,4 +481,4 @@ footer {
 .story-detail-card img {
   width: 100%;
   height: auto;
-}
+}

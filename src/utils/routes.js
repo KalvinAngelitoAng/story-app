@@ -3,6 +3,7 @@ import Login from '../pages/login.js';
 import Register from '../pages/register.js';
 import AddStory from '../pages/add-story.js';
 import DetailStory from '../pages/detail-story.js';
+import Bookmarks from '../pages/bookmarks.js';
 
 const routes = {
   '/': Home,
@@ -10,6 +11,8 @@ const routes = {
   '/register': Register,
   '/add-story': AddStory,
   '/story/:id': DetailStory,
+  '/bookmarks': Bookmarks,
 };
 
 export default routes;
+
