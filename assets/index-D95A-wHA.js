@@ -22,7 +22,7 @@
       <div id="home-content"></div>
     `:`
       <div class="home-header" style="display: none;">
-        <h2>Jelajahi Cerita Pengguna</h2>
+        <h1>Jelajahi Cerita Pengguna</h1>
         <div class="search-container">
           <input type="text" id="search-input" placeholder="Cari cerita berdasarkan deskripsi atau nama...">
         </div>
